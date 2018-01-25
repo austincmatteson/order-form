@@ -7,6 +7,7 @@ PhotoChoice.allPhotos = [];
 var selectEL = document.getElementById('productList');
 var imgElProductImage = document.getElementById('productImage');
 var pElFormProductName = document.getElementById('formProductName');
+var buttonElSubmit = document.getElementById('addItemToCart');
 
 // Create object constructor
 function PhotoChoice(name, filepath) {
@@ -39,8 +40,39 @@ new PhotoChoice('usb', 'img/usb.gif');
 new PhotoChoice('water-can', 'img/water-can.jpg');
 new PhotoChoice('wine-glass', 'img/wine-glass.jpg');
 
+function checkLocalStorage () {
+  if (!localStorage.cart) {
+    localStorage.cart = [];
+  } else {
+    confirmCart(JSON.parse(localStorage[0]));
+  }
+}
+
+function populateOptions () {
+  for (var i in PhotoChoice.allPhotos) {
+    var optionEl = document.createElement('option');
+    optionEl.setAttribute('value', PhotoChoice.allPhotos[i].name);
+    optionEl.textContent = PhotoChoice.allPhotos[i].name;
+    selectEL.appendChild(optionEl);
+  }
+}
+
+function confirmCart (objectAdded) {
+
+}
+
 function handleSubmit (e) {
+  e.preventDefault();
   var quantity = e.target.quantity.value;
+  var productName = pElFormProductName.textContent;
+  var index = null;
+  for (index in productNames) {
+    if(productNames[index] === productName) {
+      PhotoChoice.allPhotos[index].quantity = quantity;
+    }
+  }
+  localStorage.cart.push(JSON.stringify(PhotoChoice.allPhotos[index]));
+  confirmCart(index);
 }
 
 function handleOptionSelect (e) {
@@ -48,10 +80,14 @@ function handleOptionSelect (e) {
   for (var i in productNames) {
     if(productNames[i] === productName) {
       imgElProductImage.alt = PhotoChoice.allPhotos[i].name;
-      imgElProductImage.scr = PhotoChoice.allPhotos[i].filepath;
+      imgElProductImage.src = PhotoChoice.allPhotos[i].filepath;
       pElFormProductName.textContent = PhotoChoice.allPhotos[i].name;
     }
   }
 }
 
 selectEL.addEventListener('change', handleOptionSelect);
+
+buttonElSubmit.addEventListener('submit', handleSubmit);
+
+populateOptions();
