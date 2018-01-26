@@ -7,8 +7,9 @@ PhotoChoice.allPhotos = [];
 
 var selectEL = document.getElementById('productList');
 var imgElProductImage = document.getElementById('productImage');
+var imgElconfirmImg = document.getElementById('confirmImg');
 var pElFormProductName = document.getElementById('formProductName');
-var buttonElSubmit = document.getElementById('addItemToCart');
+var pELconfirmQuantity = document.getElementById('confirmQuantity');
 var formElorderForm = document.getElementById('orderForm');
 
 // Create object constructor
@@ -61,7 +62,9 @@ function populateOptions () {
 }
 
 function confirmCart (objectAdded) {
-
+  imgElconfirmImg.src = objectAdded.filepath;
+  imgElconfirmImg.alt = objectAdded.name;
+  pELconfirmQuantity.textContent = 'You have added ' + objectAdded.quantity + ' of ' + objectAdded.name;
 }
 
 function handleSubmit (e) {
@@ -69,8 +72,8 @@ function handleSubmit (e) {
   var quantity = e.target.quantity.value;
   var productName = pElFormProductName.textContent;
   var index = null;
-  for (index in productNames) {
-    if(productNames[index] === productName) {
+  for (index in PhotoChoice.allPhotos) {
+    if(PhotoChoice.allPhotos[index].name === productName) {
       PhotoChoice.allPhotos[index].quantity = quantity;
     }
   }
