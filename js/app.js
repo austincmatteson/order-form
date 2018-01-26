@@ -1,6 +1,7 @@
 'use strict';
 
 var productNames = [];
+var cart = [];
 
 PhotoChoice.allPhotos = [];
 
@@ -8,6 +9,7 @@ var selectEL = document.getElementById('productList');
 var imgElProductImage = document.getElementById('productImage');
 var pElFormProductName = document.getElementById('formProductName');
 var buttonElSubmit = document.getElementById('addItemToCart');
+var formElorderForm = document.getElementById('orderForm');
 
 // Create object constructor
 function PhotoChoice(name, filepath) {
@@ -42,9 +44,10 @@ new PhotoChoice('wine-glass', 'img/wine-glass.jpg');
 
 function checkLocalStorage () {
   if (!localStorage.cart) {
-    localStorage.cart = [];
+    localStorage.cart = JSON.stringify([]);
   } else {
-    confirmCart(JSON.parse(localStorage[0]));
+    cart = JSON.parse(localStorage.cart);
+    confirmCart(cart[0]);
   }
 }
 
@@ -71,7 +74,9 @@ function handleSubmit (e) {
       PhotoChoice.allPhotos[index].quantity = quantity;
     }
   }
-  localStorage.cart.push(JSON.stringify(PhotoChoice.allPhotos[index]));
+  cart = JSON.parse(localStorage.cart); // pull the array from local storage
+  cart.push(PhotoChoice.allPhotos[index]); // update the array
+  localStorage.cart = JSON.stringify(cart); // pass it back into local sotrage
   confirmCart(index);
 }
 
@@ -88,6 +93,7 @@ function handleOptionSelect (e) {
 
 selectEL.addEventListener('change', handleOptionSelect);
 
-buttonElSubmit.addEventListener('submit', handleSubmit);
+formElorderForm.addEventListener('submit', handleSubmit);
 
 populateOptions();
+checkLocalStorage();
